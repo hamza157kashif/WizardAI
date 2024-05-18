@@ -4,7 +4,6 @@ const DashboardPage =() => {
   return (
     <div>
       <p>Dashboard</p>
-      <UserButton afterSignOutUrl=""/>
     </div>
   );
 }

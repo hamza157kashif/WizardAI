@@ -18,8 +18,10 @@ import { Loader } from "@/components/loader";
 import { cn } from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
+import { useProdModal } from "@/hooks/use-prod-modal";
 const ConversationPage = () => {
-    const router = useRouter()
+    const router = useRouter();
+    const proModal = useProdModal();
     const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([])
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -43,8 +45,10 @@ const ConversationPage = () => {
             setMessages((current) => [...current, userMessage, reponse.data])
 
             form.reset();
-        } catch (error) {
-            console.log("Error in frontend", error)
+        } catch (error: any) {
+            if (error?.response?.status === 403) {
+                proModal.onOpen();
+            }
         } finally {
             router.refresh()
         }

@@ -15,8 +15,10 @@ import { useState } from "react";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
 import { cn } from "@/lib/utils";
+import { useProdModal } from "@/hooks/use-prod-modal";
 const VideoPage = () => {
     const router = useRouter();
+    const proModal = useProdModal();
     const [video, setVideo] = useState<string>();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -32,7 +34,10 @@ const VideoPage = () => {
             const response = await axios.post("/api/video", values);
             setVideo(response.data[0]);
             form.reset();
-        } catch (error) {
+        } catch (error: any) {
+            if (error?.response?.status === 403) {
+                proModal.onOpen();
+            }
             console.log("Error in video frontend", error)
         } finally {
             router.refresh()

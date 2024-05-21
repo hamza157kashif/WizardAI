@@ -18,9 +18,11 @@ import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
+import { useProdModal } from "@/hooks/use-prod-modal";
 const ImagePage = () => {
-    const [images, setImages] = useState<string[]>([])
-    const router = useRouter()
+    const [images, setImages] = useState<string[]>([]);
+    const router = useRouter();
+    const proModal = useProdModal();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -38,7 +40,10 @@ const ImagePage = () => {
             const urls = response.data.map((image: {url: string})=> image.url);
             setImages(urls);
             form.reset();
-        } catch (error) {
+        } catch (error: any) {
+            if (error?.response?.status === 403) {
+                proModal.onOpen();
+            }
             console.log("Error in image frontend", error)
         } finally {
             router.refresh()

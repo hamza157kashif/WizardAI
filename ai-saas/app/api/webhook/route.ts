@@ -7,18 +7,23 @@ import { stripe } from "@/lib/stripe";
 
 export async function POST(req: Request) {
     const body = await req.text();
-    const signature = headers().get("Stripe-Signature") as string;
+    const signature = headers().get("stripe-signature") as string;
 
     let event: Stripe.Event;
 
     try {
+        const header = stripe.webhooks.generateTestHeaderString({
+            payload: body,
+            secret: process.env.STRIPE_WEBHOOK_SECRET!,
+          });
         event = stripe.webhooks.constructEvent(
             body,
-            signature,
+            header,
             process.env.STRIPE_WEBHOOK_SECRET!
         );
 
     } catch (error: any) {
+        console.log('webhook error', error);
         return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
     }
 
@@ -30,6 +35,7 @@ export async function POST(req: Request) {
         );
 
         if(!session?.metadata?.userId) {
+            console.log('user id required error');
             return new NextResponse("user id is required", { status: 400 });
         }
         await prismadb.userSubscription.create({

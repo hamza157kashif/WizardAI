@@ -20,6 +20,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
 import ReactMarkdown from "react-markdown";
 import { useProdModal } from "@/hooks/use-prod-modal";
+import toast from "react-hot-toast";
 const CodePage = () => {
     const router = useRouter()
     const proModal = useProdModal();
@@ -33,7 +34,6 @@ const CodePage = () => {
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async( values: z.infer<typeof formSchema>) => {
-        console.log(values);
         try {
             const userMessage: ChatCompletionMessageParam = {
                 role: "user",
@@ -49,6 +49,8 @@ const CodePage = () => {
         } catch (error: any) {
             if (error?.response?.status === 403) {
                 proModal.onOpen();
+            } else {
+                toast.error("Something went wrong.");
             }
             console.log("Error in frontend", error)
         } finally {

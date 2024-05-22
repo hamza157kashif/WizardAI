@@ -19,6 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import { useProdModal } from "@/hooks/use-prod-modal";
+import toast from "react-hot-toast";
 const ImagePage = () => {
     const [images, setImages] = useState<string[]>([]);
     const router = useRouter();
@@ -43,6 +44,8 @@ const ImagePage = () => {
         } catch (error: any) {
             if (error?.response?.status === 403) {
                 proModal.onOpen();
+            } else {
+                toast.error("Something went wrong.");
             }
             console.log("Error in image frontend", error)
         } finally {

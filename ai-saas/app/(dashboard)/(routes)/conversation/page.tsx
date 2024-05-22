@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
 import { useProdModal } from "@/hooks/use-prod-modal";
+import toast from "react-hot-toast";
 const ConversationPage = () => {
     const router = useRouter();
     const proModal = useProdModal();
@@ -32,7 +33,6 @@ const ConversationPage = () => {
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async( values: z.infer<typeof formSchema>) => {
-        console.log(values);
         try {
             const userMessage: ChatCompletionMessageParam = {
                 role: "user",
@@ -48,6 +48,8 @@ const ConversationPage = () => {
         } catch (error: any) {
             if (error?.response?.status === 403) {
                 proModal.onOpen();
+            } else {
+                toast.error("Something went wrong.");
             }
         } finally {
             router.refresh()

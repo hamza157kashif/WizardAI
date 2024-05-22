@@ -10,9 +10,10 @@ import { useProdModal } from "@/hooks/use-prod-modal";
 
 interface IFreeCounterProps{
     apiLimitCount: number;
+    isPro: boolean;
 }
 
-export const FreeCounter = ({ apiLimitCount }: IFreeCounterProps) => {
+export const FreeCounter = ({ apiLimitCount, isPro = false }: IFreeCounterProps) => {
     const [mounted, setMounted] = useState(false);
     const proModal = useProdModal();
     useEffect(() => {
@@ -20,6 +21,9 @@ export const FreeCounter = ({ apiLimitCount }: IFreeCounterProps) => {
     },[]);
 
     if (!mounted) {
+        return null;
+    }
+    if (isPro) {
         return null;
     }
     return (

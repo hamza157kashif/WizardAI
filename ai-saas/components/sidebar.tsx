@@ -2,13 +2,12 @@
 
 import { cn } from "@/lib/utils";
 import { Code, ImageIcon, LayoutDashboard, MessageSquare, Music, Settings, VideoIcon } from "lucide-react";
-import { Montserrat } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FreeCounter } from "./free-counter";
+import { montserrat } from "@/constants";
 
-const montserrat = Montserrat({ weight: "600", subsets: ["latin"]})
 
 const routes = [
     {

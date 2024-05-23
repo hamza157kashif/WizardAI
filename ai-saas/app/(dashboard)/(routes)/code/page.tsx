@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
 import { cn } from "@/lib/utils";
@@ -21,6 +20,7 @@ import { BotAvatar } from "@/components/bot-avatar";
 import ReactMarkdown from "react-markdown";
 import { useProdModal } from "@/hooks/use-prod-modal";
 import toast from "react-hot-toast";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 const CodePage = () => {
     const router = useRouter()
     const proModal = useProdModal();
@@ -107,9 +107,9 @@ const CodePage = () => {
                         <Empty label="No conversation started"/>
                     )}
                     <div className="flex flex-col-reverse gap-y-4">
-                        {messages.map((message) => (
+                        {messages.map((message, index) => (
                             <div 
-                                key={message.content}
+                                key={index}
                                 className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg", message.role === "user" ? "bg-white border border-black/10" : "bg-muted")}
                             >
                                 {message.role === "user" ? <UserAvatar /> : <BotAvatar/>}
@@ -126,7 +126,7 @@ const CodePage = () => {
                                     }}
                                     className="text-sm overflow-hidden leading-7"
                                 >
-                                    {message.content || ""}
+                                    {typeof message.content === 'string' ? message.content : JSON.stringify(message.content) || ""}
                                 </ReactMarkdown>
 
                             </div>
